@@ -1,0 +1,5 @@
+grpc:
+  client:
+    testEntityService:
+      address: static://127.0.0.1:9090  # 서버의 정확한 주소와 포트 번호
+      negotiationType: plaintext
