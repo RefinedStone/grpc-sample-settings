@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package com.akra;
+
+import "google/protobuf/empty.proto";
+// Entity
+message TestEntity {
+  int32 id = 1;
+  Address address = 2;
+  repeated Member members = 3;
+  repeated Product products = 4;
+
+  message Address {
+    string street = 1;
+    string city = 2;
+    string state = 3;
+    string zipCode = 4;
+    string country = 5;
+  }
+
+  message Member {
+    string name = 1;
+    int32 memberId = 2;
+  }
+
+  message Product {
+    int32 productId = 1;
+    string name = 2;
+    double price = 3;
+    int32 quantity = 4;
+  }
+}
+
+// Service
+service TestEntityService {
+  // ID 없이 단일 TestEntity 요청
+  rpc GetOneTestEntity(google.protobuf.Empty) returns (TestEntityResponse);
+  rpc GetAllTestEntities(google.protobuf.Empty) returns (TestEntityList);
+}
+
+// Response message for a single TestEntity
+message TestEntityResponse {
+  TestEntity entity = 1;
+}
+
+// Response message containing a list of TestEntities
+message TestEntityList {
+  repeated TestEntity entities = 1;
+}
+
