@@ -1,4 +1,7 @@
 package com.akra
+
+
+import com.akra.sample.proficiency.service.TestEntityServiceGrpc
 import com.google.protobuf.Empty
 import net.devh.boot.grpc.client.inject.GrpcClient
 import org.springframework.stereotype.Service

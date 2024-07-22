@@ -1,6 +1,6 @@
 package sample
 
-import com.akra.TestEntityServiceGrpc
+import com.akra.sample.proficiency.service.TestEntityServiceGrpc
 import io.grpc.ManagedChannelBuilder
 
     fun main() {

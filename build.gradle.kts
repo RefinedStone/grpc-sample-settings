@@ -27,6 +27,14 @@ dependencies {
     implementation("io.grpc:grpc-stub:$grpcVersion")
     implementation("org.springframework.boot:spring-boot-starter-web:$springBootStarterVersion")
     implementation("net.devh:grpc-spring-boot-starter:$grpcSpringBootStarterVersion")
+
+    // coroutine
+    val coroutineVersion = "1.6.4"
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutineVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$coroutineVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$coroutineVersion")
+
     configurations.all {
         resolutionStrategy.force("com.google.errorprone:error_prone_annotations:2.23.0")
     }

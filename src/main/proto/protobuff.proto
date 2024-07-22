@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package com.akra;
+package com.akra.sample.proficiency.service;
 
 import "google/protobuf/empty.proto";
 // Entity
