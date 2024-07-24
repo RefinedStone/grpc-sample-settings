@@ -1,0 +1,257 @@
+From b6025b3018c737e0b3c09447b3a0c57b571d675c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E1=84=8B=E1=85=B5=E1=84=89=E1=85=B3=E1=86=BC=E1=84=8C?=
+ =?UTF-8?q?=E1=85=AE?= <135289555+seungjoo-1ee@users.noreply.github.com>
+Date: Tue, 23 Jul 2024 13:33:28 +0900
+Subject: [PATCH] grpc test finished
+
+---
+ .../src/main/kotlin/GrpcClientService.kt      |  10 +-
+ .../src/test/kotlin/GrpcControllerTest.kt     | 102 +++++++++++-------
+ src/main/kotlin/sample/Client.kt              |  44 ++++----
+ 3 files changed, 90 insertions(+), 66 deletions(-)
+
+diff --git a/grpc-client/src/main/kotlin/GrpcClientService.kt b/grpc-client/src/main/kotlin/GrpcClientService.kt
+index 2006921..25e6ed8 100644
+--- a/grpc-client/src/main/kotlin/GrpcClientService.kt
++++ b/grpc-client/src/main/kotlin/GrpcClientService.kt
+@@ -1,6 +1,7 @@
+ package com.akra
+ 
+ 
++import com.akra.sample.proficiency.service.Protobuff
+ import com.akra.sample.proficiency.service.TestEntityServiceGrpc
+ import com.google.protobuf.Empty
+ import net.devh.boot.grpc.client.inject.GrpcClient
+@@ -12,14 +13,13 @@ class GrpcClientService {
+     @GrpcClient("testEntityService")
+     private lateinit var testEntityServiceBlockingStub: TestEntityServiceGrpc.TestEntityServiceBlockingStub
+ 
+-    fun getOneTestEntity() {
++    fun getOneTestEntity(): Protobuff.TestEntityResponse? {
+         val response = testEntityServiceBlockingStub.getOneTestEntity(Empty.getDefaultInstance())
+-        println("Received: ${response.entity}")
++        return response
+     }
+ 
+-    fun getAllTestEntities() {
++    fun getAllTestEntities(): Protobuff.TestEntityList? {
+         val response = testEntityServiceBlockingStub.getAllTestEntities(Empty.getDefaultInstance())
+-        println("Received: ")
+-        response.entitiesList.forEach { println(it) }
++        return response
+     }
+ }
+diff --git a/grpc-client/src/test/kotlin/GrpcControllerTest.kt b/grpc-client/src/test/kotlin/GrpcControllerTest.kt
+index b604573..c1bcf2d 100644
+--- a/grpc-client/src/test/kotlin/GrpcControllerTest.kt
++++ b/grpc-client/src/test/kotlin/GrpcControllerTest.kt
+@@ -25,7 +25,7 @@ class GrpcControllerTest(
+ 
+     @Test
+     fun testSetDummys() {
+-        val size = 1000
++        val size = 100
+         val response =
+             webClient
+                 .post()
+@@ -40,86 +40,110 @@ class GrpcControllerTest(
+     fun testGetOneProto() {
+         val before = LocalDateTime.now()
+         (0..10000).forEach {
+-            val response =
+-                webClient
+-                    .get()
+-                    .uri("/proto")
+-                    .accept(MediaType.APPLICATION_PROTOBUF)
+-                    .retrieve()
+-                    .bodyToMono(ByteArray::class.java)
+-                    .block()
++            webClient
++                .get()
++                .uri("/proto")
++                .accept(MediaType.APPLICATION_PROTOBUF)
++                .retrieve()
++                .bodyToMono(ByteArray::class.java)
++                .block()
+         }
+         val after = LocalDateTime.now()
+         println("==========")
+         println(before.toString())
+         println(after.toString())
+-        println(after.nano - before.nano)
+         println("==========")
+-        // 85684700 nano
++        // 35
+     }
+ 
+     @Test
+     fun testGetOneJson() {
+         val before = LocalDateTime.now()
+         (0..10000).forEach {
+-            val response =
+-                webClient
+-                    .get()
+-                    .uri("/json")
+-                    .accept(MediaType.APPLICATION_JSON)
+-                    .retrieve()
+-                    .bodyToMono(TestEntity::class.java)
+-                    .block()
++            webClient
++                .get()
++                .uri("/json")
++                .accept(MediaType.APPLICATION_JSON)
++                .retrieve()
++                .bodyToMono(TestEntity::class.java)
++                .block()
+         }
+         val after = LocalDateTime.now()
+         println("==========")
+         println(before.toString())
+         println(after.toString())
+-        println(after.nano - before.nano)
+         println("==========")
+-        //
++        // 34
+     }
+ 
+     @Test
+     fun testGetAllProto() {
+         val before = LocalDateTime.now()
+         (0..10000).forEach {
+-            val response =
+-                webClient
+-                    .get()
+-                    .uri("/proto/all")
+-                    .accept(MediaType.APPLICATION_PROTOBUF)
++            webClient
++                .get()
++                .uri("/proto/all")
++                .accept(MediaType.APPLICATION_PROTOBUF)
+ //                    .accept(MediaType.APPLICATION_OCTET_STREAM)
+-                    .retrieve()
+-                    .bodyToMono(ByteArray::class.java)
+-                    .block()
++                .retrieve()
++                .bodyToMono(ByteArray::class.java)
++                .block()
+         }
+         val after = LocalDateTime.now()
+         println("==========")
+         println(before.toString())
+         println(after.toString())
+-        println(after.nano - before.nano)
+         println("==========")
++        // 1 21
++        // 47
+     }
+ 
+     @Test
+     fun testGetAllJson() {
+         val before = LocalDateTime.now()
+         (0..10000).forEach {
+-            val response =
+-                webClient
+-                    .get()
+-                    .uri("/json/all")
+-                    .accept(MediaType.APPLICATION_JSON)
+-                    .retrieve()
+-                    .bodyToMono(Array<TestEntity>::class.java)
+-                    .block()
++            webClient
++                .get()
++                .uri("/json/all")
++                .accept(MediaType.APPLICATION_JSON)
++                .retrieve()
++                .bodyToMono(Array<TestEntity>::class.java)
++                .block()
+         }
+         val after = LocalDateTime.now()
+         println("==========")
+         println(before.toString())
+         println(after.toString())
+-        println(after.nano - before.nano)
+         println("==========")
++        // 2 58
++    }
++
++    @Test
++    fun testGetOneGrpc() {
++        val before = LocalDateTime.now()
++        (0..10000).forEach {
++            grpcService.getOneTestEntity()
++        }
++        val after = LocalDateTime.now()
++        println("==========")
++        println(before.toString())
++        println(after.toString())
++        println("==========")
++        // 2
++    }
++
++    @Test
++    fun testGetAllGrpc(){
++        val before = LocalDateTime.now()
++        (0..10000).forEach {
++            grpcService.getAllTestEntities()
++        }
++        val after = LocalDateTime.now()
++        println("==========")
++        println(before.toString())
++        println(after.toString())
++        println("==========")
++        // 7
+     }
+ }
++
+diff --git a/src/main/kotlin/sample/Client.kt b/src/main/kotlin/sample/Client.kt
+index fc0e66a..3d3015d 100644
+--- a/src/main/kotlin/sample/Client.kt
++++ b/src/main/kotlin/sample/Client.kt
+@@ -1,22 +1,22 @@
+-package sample
+-
+-import com.akra.sample.proficiency.service.TestEntityServiceGrpc
+-import io.grpc.ManagedChannelBuilder
+-
+-    fun main() {
+-        val channel = ManagedChannelBuilder.forAddress("localhost", 9090)
+-            .usePlaintext()
+-            .build()
+-
+-        val stub = TestEntityServiceGrpc.newBlockingStub(channel)
+-
+-
+-        val responseOne = stub.getOneTestEntity(com.google.protobuf.Empty.getDefaultInstance())
+-        println("Received: ${responseOne.entity}")
+-
+-        val responseAll = stub.getAllTestEntities(com.google.protobuf.Empty.getDefaultInstance())
+-        println("Received: ")
+-        responseAll.entitiesList.forEach { println(it) }
+-
+-        channel.shutdown()
+-    }
++//package sample
++//
++//import com.akra.sample.proficiency.service.TestEntityServiceGrpc
++//import io.grpc.ManagedChannelBuilder
++//
++//    fun main() {
++//        val channel = ManagedChannelBuilder.forAddress("localhost", 9090)
++//            .usePlaintext()
++//            .build()
++//
++//        val stub = TestEntityServiceGrpc.newBlockingStub(channel)
++//
++//
++//        val responseOne = stub.getOneTestEntity(com.google.protobuf.Empty.getDefaultInstance())
++//        println("Received: ${responseOne.entity}")
++//
++//        val responseAll = stub.getAllTestEntities(com.google.protobuf.Empty.getDefaultInstance())
++//        println("Received: ")
++//        responseAll.entitiesList.forEach { println(it) }
++//
++//        channel.shutdown()
++//    }
+-- 
+2.45.2
+

@@ -27,6 +27,8 @@ dependencies {
     implementation("io.grpc:grpc-stub:$grpcVersion")
     implementation("org.springframework.boot:spring-boot-starter-web:$springBootStarterVersion")
     implementation("net.devh:grpc-client-spring-boot-starter:$grpcSpringBootStarterVersion")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     configurations.all {
         resolutionStrategy.force("com.google.errorprone:error_prone_annotations:2.23.0")
     }

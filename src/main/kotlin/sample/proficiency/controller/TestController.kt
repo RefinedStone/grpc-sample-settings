@@ -1,3 +1,9 @@
+package com.akra.sample.proficiency.controller
+
+
+import com.akra.sample.proficiency.entity.TestEntity
+import com.akra.sample.proficiency.service.TestProtobufService
+import com.akra.sample.proficiency.service.TestService
 import com.google.protobuf.MessageLite
 import kotlinx.coroutines.runBlocking
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,16 +27,16 @@ class TestController(
         }
     }
 
-    @GetMapping("/proto")
+    @GetMapping("/proto", produces = ["application/x-protobuf"])
      fun getOneProto(): ByteArray = testProtobufService.getOne()?.toByteArray() ?: ByteArray(0)
 
-    @GetMapping("/json")
+    @GetMapping("/json", produces = ["application/json"])
      fun getOneJson(): TestEntity = testService.getOne()!!
 
-    @GetMapping("/proto/all")
+    @GetMapping("/proto/all", produces = ["application/x-protobuf"])
      fun getAllProto(): ByteArray = testProtobufService.getAll().toByteArray()
 
-    @GetMapping("/json/all")
+    @GetMapping("/json/all", produces = ["application/json"])
      fun getAllJson(): Collection<TestEntity> = testService.getAll()
 }
 

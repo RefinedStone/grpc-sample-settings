@@ -2,7 +2,7 @@ package com.akra.sample.proficiency.service
 
 
 
-import com.akra.sample.proficiency.TestProtobufRepository
+import com.akra.sample.proficiency.repository.TestProtobufRepository
 import com.google.protobuf.Empty
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService

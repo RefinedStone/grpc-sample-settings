@@ -1,7 +1,8 @@
-package com.akra.sample.proficiency
-import TestEntity
-import TestEntity.Companion.generateDummyData
-import TestEntity.Companion.protoToKotlin
+package com.akra.sample.proficiency.repository
+
+import com.akra.sample.proficiency.entity.TestEntity
+import com.akra.sample.proficiency.entity.TestEntity.Companion.generateDummyData
+import com.akra.sample.proficiency.entity.TestEntity.Companion.protoToKotlin
 import com.akra.sample.proficiency.service.Protobuff
 
 
@@ -24,7 +25,7 @@ class TestRepository {
     }
 
     fun findOne(): TestEntity? {
-        return repository[0]
+        return repository.values.firstOrNull()
     }
 
     fun setDummy(size: Int) {
@@ -51,7 +52,7 @@ class TestProtobufRepository {
     }
 
     fun findOne(): Protobuff.TestEntity? {
-        return repository[0]
+        return repository.values.firstOrNull()
     }
 
     fun setDummy(size: Int) {

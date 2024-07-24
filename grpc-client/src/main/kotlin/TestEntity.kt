@@ -1,4 +1,5 @@
-package com.akra.sample.proficiency.entity
+package com.akra
+
 import com.akra.sample.proficiency.service.Protobuff
 import kotlin.random.Random
 

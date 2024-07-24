@@ -1,7 +1,8 @@
+package com.akra.sample.proficiency.service
 
-import com.akra.sample.proficiency.TestProtobufRepository
-import com.akra.sample.proficiency.TestRepository
-import com.akra.sample.proficiency.service.Protobuff
+import com.akra.sample.proficiency.repository.TestProtobufRepository
+import com.akra.sample.proficiency.repository.TestRepository
+import com.akra.sample.proficiency.entity.TestEntity
 import org.springframework.stereotype.Service
 
 @Service
