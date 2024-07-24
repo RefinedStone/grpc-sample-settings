@@ -1,6 +1,7 @@
 import com.akra.GrpcClientApplication
 import com.akra.GrpcClientService
 import com.akra.TestEntity
+import com.akra.sample.proficiency.service.Protobuff
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,12 +21,11 @@ class GrpcControllerTest(
                 builder.codecs { codecs ->
                     codecs.defaultCodecs().maxInMemorySize(100 * 1024 * 1024) // 10MB
                 }
-            }
-            .build()
+            }.build()
 
     @Test
     fun testSetDummys() {
-        val size = 100
+        val size = 5000
         val response =
             webClient
                 .post()
@@ -40,12 +40,12 @@ class GrpcControllerTest(
     fun testGetOneProto() {
         val before = LocalDateTime.now()
         (0..10000).forEach {
-            webClient
+          val result =  webClient
                 .get()
                 .uri("/proto")
                 .accept(MediaType.APPLICATION_PROTOBUF)
                 .retrieve()
-                .bodyToMono(ByteArray::class.java)
+                .bodyToMono(Protobuff.TestEntity::class.java)
                 .block()
         }
         val after = LocalDateTime.now()
@@ -53,7 +53,7 @@ class GrpcControllerTest(
         println(before.toString())
         println(after.toString())
         println("==========")
-        // 35
+        // 3
     }
 
     @Test
@@ -73,29 +73,29 @@ class GrpcControllerTest(
         println(before.toString())
         println(after.toString())
         println("==========")
-        // 34
+        // 4
     }
 
     @Test
     fun testGetAllProto() {
         val before = LocalDateTime.now()
-        (0..10000).forEach {
-            webClient
-                .get()
-                .uri("/proto/all")
-                .accept(MediaType.APPLICATION_PROTOBUF)
+        (0..1000).forEach {
+                webClient
+                    .get()
+                    .uri("/proto/all")
+                    .accept(MediaType.APPLICATION_PROTOBUF)
 //                    .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .retrieve()
-                .bodyToMono(ByteArray::class.java)
-                .block()
+                    .retrieve()
+//                    .bodyToMono(ByteArray::class.java)
+                    .bodyToMono(Protobuff.TestEntityList::class.java)
+                    .block()
         }
         val after = LocalDateTime.now()
         println("==========")
         println(before.toString())
         println(after.toString())
         println("==========")
-        // 1 21
-        // 47
+        // 27
     }
 
     @Test
@@ -115,7 +115,7 @@ class GrpcControllerTest(
         println(before.toString())
         println(after.toString())
         println("==========")
-        // 2 58
+        // 110
     }
 
     @Test
@@ -129,13 +129,13 @@ class GrpcControllerTest(
         println(before.toString())
         println(after.toString())
         println("==========")
-        // 2
+        // 3
     }
 
     @Test
-    fun testGetAllGrpc(){
+    fun testGetAllGrpc() {
         val before = LocalDateTime.now()
-        (0..10000).forEach {
+        (0..1000).forEach {
             grpcService.getAllTestEntities()
         }
         val after = LocalDateTime.now()
@@ -143,7 +143,6 @@ class GrpcControllerTest(
         println(before.toString())
         println(after.toString())
         println("==========")
-        // 7
+        // 33
     }
 }
-
