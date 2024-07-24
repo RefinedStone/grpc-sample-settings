@@ -1,7 +1,5 @@
 package com.akra.sample.proficiency.service
 
-
-
 import com.akra.sample.proficiency.repository.TestProtobufRepository
 import com.google.protobuf.Empty
 import io.grpc.stub.StreamObserver
